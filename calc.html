@@ -1,5 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Calculator v2</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,154 +13,128 @@
             background-color: #f2f2f2;
             margin: 0;
         }
+
         .calculator {
-            width: 300px;
+            width: 320px;
             background-color: #fff;
             border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
             padding: 20px;
         }
+
         .display {
             width: 100%;
-            height: 50px;
+            height: 60px;
             text-align: right;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             padding: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: none;
             background-color: #ffeb3b;
             border-radius: 8px;
             color: #333;
         }
+
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-        .button {
-            background-color: #03a9f4;
+
+        button {
+            font-size: 1.4rem;
+            padding: 18px;
             border: none;
-            font-size: 1.5rem;
-            padding: 20px;
-            cursor: pointer;
             border-radius: 10px;
-            transition: background-color 0.3s, transform 0.2s;
+            cursor: pointer;
+            transition: 0.2s;
             color: white;
         }
-        .button:hover {
-            background-color: #0288d1;
-            transform: scale(1.1);
+
+        button:hover {
+            transform: scale(1.05);
         }
-        .button:active {
-            transform: scale(0.95);
-        }
-        .button.clear {
-            background-color: #ff5722;
-        }
-        .button.clear:hover {
-            background-color: #e64a19;
-        }
-        .button.equal {
-            background-color: #8bc34a;
-        }
-        .button.equal:hover {
-            background-color: #689f38;
-        }
-        .button.operator {
-            background-color: #ff9800;
-        }
-        .button.operator:hover {
-            background-color: #f57c00;
+
+        .number { background-color: #03a9f4; }
+        .operator { background-color: #ff9800; }
+        .equal { background-color: #8bc34a; }
+        .clear { background-color: #f44336; }
+        .back { background-color: #9e9e9e; }
+
+        .equal {
+            grid-column: span 2;
         }
     </style>
 </head>
+
 <body>
-    <div class="calculator">
-        <input type="text" id="display" class="display" disabled>
-        <div class="buttons">
-            <button class="button clear" onclick="clearDisplay()">C</button>
-            <button class="button operator" onclick="appendOperation('/')">/</button>
-            <button class="button operator" onclick="appendOperation('*')">*</button>
-            <button class="button operator" onclick="appendOperation('-')">-</button>
 
-            <button class="button" onclick="appendNumber('7')">7</button>
-            <button class="button" onclick="appendNumber('8')">8</button>
-            <button class="button" onclick="appendNumber('9')">9</button>
-            <button class="button operator" onclick="appendOperation('+')">+</button>
+<div class="calculator">
+    <input type="text" id="display" class="display" disabled>
 
-            <button class="button" onclick="appendNumber('4')">4</button>
-            <button class="button" onclick="appendNumber('5')">5</button>
-            <button class="button" onclick="appendNumber('6')">6</button>
-            <button class="button equal" onclick="calculate()">=</button>
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="back" onclick="backspace()">⌫</button>
+        <button class="operator" onclick="append('/')">/</button>
+        <button class="operator" onclick="append('*')">*</button>
 
-            <button class="button" onclick="appendNumber('1')">1</button>
-            <button class="button" onclick="appendNumber('2')">2</button>
-            <button class="button" onclick="appendNumber('3')">3</button>
-            <button class="button" onclick="appendNumber('0')">0</button>
-             <button class="button" onclick="appendNumber('44')">44</button>
-        </div>
+        <button class="number" onclick="append('7')">7</button>
+        <button class="number" onclick="append('8')">8</button>
+        <button class="number" onclick="append('9')">9</button>
+        <button class="operator" onclick="append('-')">-</button>
+
+        <button class="number" onclick="append('4')">4</button>
+        <button class="number" onclick="append('5')">5</button>
+        <button class="number" onclick="append('6')">6</button>
+        <button class="operator" onclick="append('+')">+</button>
+
+        <button class="number" onclick="append('1')">1</button>
+        <button class="number" onclick="append('2')">2</button>
+        <button class="number" onclick="append('3')">3</button>
+
+        <button class="number" onclick="append('0')">0</button>
+        <button class="number" onclick="append('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
     </div>
+</div>
 
-    <script>
-        let currentInput = '';
-        let currentOperation = '';
-        let previousInput = '';
+<script>
+    let display = document.getElementById("display");
 
-        function appendNumber(number) {
-            currentInput += number;
-            document.getElementById('display').value = `${previousInput} ${currentOperation} ${currentInput}`;
+    function append(value) {
+        display.value += value;
+    }
+
+    function clearDisplay() {
+        display.value = "";
+    }
+
+    function backspace() {
+        display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+        try {
+            display.value = eval(display.value);
+        } catch {
+            alert("Invalid Expression");
+            clearDisplay();
         }
+    }
 
-        function appendOperation(operation) {
-            if (currentInput === '') return;
-            if (previousInput !== '') {
-                calculate(); // Calculate the previous operation before appending a new one
-            }
-            currentOperation = operation;
-            previousInput = currentInput;
-            currentInput = '';
-            document.getElementById('display').value = `${previousInput} ${currentOperation}`;
+    // Keyboard support
+    document.addEventListener("keydown", function (e) {
+        if ("0123456789+-*/.".includes(e.key)) {
+            append(e.key);
+        } else if (e.key === "Enter") {
+            calculate();
+        } else if (e.key === "Backspace") {
+            backspace();
+        } else if (e.key === "Escape") {
+            clearDisplay();
         }
+    });
+</script>
 
-        function calculate() {
-            if (previousInput === '' || currentInput === '') return;
-            let result;
-            let prev = parseFloat(previousInput);
-            let current = parseFloat(currentInput);
-
-            switch (currentOperation) {
-                case '+':
-                    result = prev + current;
-                    break;
-                case '-':
-                    result = prev - current;
-                    break;
-                case '*':
-                    result = prev * current;
-                    break;
-                case '/':
-                    if (current === 0) {
-                        alert("Cannot divide by zero");
-                        return;
-                    }
-                    result = prev / current;
-                    break;
-                default:
-                    return;
-            }
-
-            currentInput = result.toString();
-            currentOperation = '';
-            previousInput = '';
-            document.getElementById('display').value = currentInput;
-        }
-
-        function clearDisplay() {
-            currentInput = '';
-            previousInput = '';
-            currentOperation = '';
-            document.getElementById('display').value = '';
-        }
-    </script>
 </body>
 </html>
